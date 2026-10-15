@@ -33,8 +33,8 @@ The repository includes a top-level `Makefile` for streamlined development:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/PowerA-PC-HQ-macOS.git
-cd PowerA-PC-HQ-macOS
+git clone https://github.com/darthdragneel1/PowerA-HQ-for-OPS-v1.git
+cd PowerA-HQ-for-OPS-v1
 
 # 2. Verify build prerequisites
 make test

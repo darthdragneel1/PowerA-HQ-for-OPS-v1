@@ -2,7 +2,7 @@
 
 [![Platform: macOS](https://img.shields.io/badge/Platform-macOS%2011%2B-brightgreen.svg)](https://apple.com/macos)
 [![Architecture: Apple Silicon & Intel](https://img.shields.io/badge/Architecture-Universal%20(arm64%20%7C%20x86__64)-orange.svg)]()
-[![Build & Test](https://github.com/abhishiekkurra/PowerA-PC-HQ-macOS/actions/workflows/build.yml/badge.svg)](https://github.com/abhishiekkurra/PowerA-PC-HQ-macOS/actions/workflows/build.yml)
+[![Build & Test](https://github.com/darthdragneel1/PowerA-HQ-for-OPS-v1/actions/workflows/build.yml/badge.svg)](https://github.com/darthdragneel1/PowerA-HQ-for-OPS-v1/actions/workflows/build.yml)
 
 > **Note**: This is an **unofficial, independent personal side project** created out of personal interest to bring native driver support and companion tooling to macOS. The author has **no affiliation, connection, or ties to PowerA or ACCO Brands**.
 
@@ -47,7 +47,7 @@ Designed natively for Apple Silicon (M1/M2/M3/M4) and Intel Macs running macOS 1
 
 ### 1. Installation via Drag-and-Drop DMG
 
-Download the latest release DMG from the [Releases](https://github.com/abhishiekkurra/PowerA-PC-HQ-macOS/releases) page:
+Download the latest release DMG from the [Releases](https://github.com/darthdragneel1/PowerA-HQ-for-OPS-v1/releases) page:
 
 1. Open `PowerA_PC_HQ_v1.4.2_macOS.dmg`.
 2. Drag **PowerA PC HQ** into your **Applications** folder.

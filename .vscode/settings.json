@@ -1,0 +1,14 @@
+{
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/**",
+    "${workspaceFolder}/driver",
+    "${workspaceFolder}/PowerA-PC-HQ-macOS/**",
+    "${workspaceFolder}/PowerA-PC-HQ-macOS/driver",
+    "/opt/homebrew/include/**",
+    "/opt/homebrew/include",
+    "/opt/homebrew/include/hidapi"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none"
+  }
+}

@@ -1,0 +1,49 @@
+# PowerA PC HQ for macOS - .gitignore
+
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Build and Distribution Artifacts
+build/
+dist/
+bin/
+dmg_stage/
+*.app
+*.dmg
+*.sha256
+
+# Object and Compiled Binary Files
+*.o
+*.obj
+*.dylib
+*.a
+*.so
+*.dSYM/
+
+# Windows Binaries & Installers
+*.exe
+*.msi
+*.dll
+
+# Logs, PIDs, and Lockfiles
+*.log
+*.err
+*.pid
+*.lock
+/tmp/powera_driver*
+
+# Editor & Language Server Artifacts
+.cache/
+.vscode/ipch/
+compile_commands.json
+
+# Python Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/

@@ -1,0 +1,55 @@
+name: Build and Test macOS App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build macOS Application & DMG
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies via Homebrew
+        run: |
+          brew update
+          brew install hidapi
+
+      - name: Verify build prerequisites
+        run: make test
+
+      - name: Compile application bundle and driver daemon
+        run: make app
+
+      - name: Compile CLI diagnostics and mapping tools
+        run: make tools
+
+      - name: Build standalone DMG installer
+        run: make dmg
+
+      - name: Verify generated artifacts
+        run: |
+          ls -la build/
+          ls -la dist/
+          ls -la bin/
+
+      - name: Upload DMG Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PowerA_PC_HQ_macOS_DMG
+          path: |
+            dist/*.dmg
+            dist/*.sha256
+          retention-days: 14
+
+      - name: Upload Application Bundle Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PowerA_PC_HQ_App_Bundle
+          path: build/PowerA PC HQ.app
+          retention-days: 14

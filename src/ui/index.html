@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PowerA PC HQ for macOS</title>
+  <link rel="icon" type="image/png" href="../assets/app_icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <!-- macOS Custom Titlebar / Header -->
+  <header class="app-header">
+    <div class="header-branding">
+      <div class="brand-logo-wrap">
+        <img src="../assets/powera_chevron.png" alt="PowerA Logo" class="brand-logo" onerror="this.src='../assets/app_icon.png'">
+        <span class="brand-name">Power<span class="brand-accent">A</span></span>
+      </div>
+      <div class="app-subtitle">PC HQ <span class="badge-mac">macOS</span></div>
+    </div>
+
+    <!-- Live Status Pill in Header -->
+    <div class="header-status-group">
+      <div class="status-pill disconnected" id="status-connection-pill">
+        <span class="status-dot disconnected" id="status-dot-indicator"></span>
+        <span class="status-mode" id="status-mode-label">No Controller Connected</span>
+      </div>
+      <div class="battery-indicator" id="battery-indicator" title="Controller Battery Level">
+        <div class="battery-icon">
+          <div class="battery-level-bar" id="battery-level-bar" style="width: 0%;"></div>
+        </div>
+        <span class="battery-text" id="battery-text">—</span>
+      </div>
+      <div class="driver-service-badge" id="driver-service-badge" title="macOS Virtual Driver Running">
+        <span class="driver-pulse"></span>
+        <span>DRIVER ACTIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="device-selector-card">
+        <div class="device-thumb-wrap">
+          <img src="../assets/controller_front.png" alt="Controller" class="device-thumb" onerror="this.src='../assets/powera_chevron.png'">
+        </div>
+        <div class="device-info">
+          <h2 class="device-model-name" id="device-model-title">PowerA OPS v1</h2>
+          <div class="device-meta">
+            <span class="conn-tag" id="device-conn-tag">Disconnected</span>
+            <span class="fw-tag" id="device-fw-tag">FW v1.4.2</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3v6h8V3h-8zm0 8v10h8V11h-8zM3 21h8v-6H3v6zm0-8h8V3H3v10z"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="tester">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 15H22V9h-5.5l-3 3 3 3zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+          <span>Input Tester</span>
+        </button>
+        <button class="nav-item" data-tab="mapping">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          <span>Button Mapping</span>
+        </button>
+        <button class="nav-item" data-tab="sticks">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+          <span>Sticks & Curves</span>
+        </button>
+        <button class="nav-item" data-tab="triggers">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          <span>Triggers & Locks</span>
+        </button>
+        <button class="nav-item" data-tab="vibration">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M0 15h2V9H0v6zm3 2h2V7H3v10zm19-8v6h2V9h-2zm-3 8h2V7h-2v10zM16.5 3h-9C6.67 3 6 3.67 6 4.5v15c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5v-15c0-.83-.67-1.5-1.5-1.5zM16 19H8V5h8v14z"/></svg>
+          <span>Dual Rumble</span>
+        </button>
+        <button class="nav-item" data-tab="rgb">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.64 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+          <span>RGB Lighting</span>
+        </button>
+        <button class="nav-item" data-tab="profiles">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <span>Profiles (.pwa)</span>
+        </button>
+        <button class="nav-item" data-tab="driver">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>macOS Driver Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="active-profile-picker">
+          <label>Active Profile</label>
+          <select id="sidebar-profile-select">
+            <option value="1">T1 Profile (Default)</option>
+            <option value="2">T2 Profile (Fast Lock)</option>
+            <option value="3">T3 Profile (Hair Trigger)</option>
+            <option value="4">Custom Profile 1</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-viewport">
+      <!-- 1. DASHBOARD TAB -->
+      <section class="tab-pane active" id="tab-dashboard">
+        <div class="pane-header">
+          <div>
+            <h1>Overview & Connection</h1>
+            <p>Seamless driver operation for Wired USB, 2.4GHz Dongle, and Bluetooth modes.</p>
+          </div>
+          <div class="quick-actions">
+            <button class="btn btn-secondary" id="btn-sync-dongle">Pair 2.4G Dongle</button>
+            <button class="btn btn-primary" id="btn-test-rumble-quick">Test Motors</button>
+          </div>
+        </div>
+
+        <!-- Disconnected Guidance Banner -->
+        <div class="disconnect-banner" id="disconnect-banner">
+          <div class="disconnect-banner-content">
+            <div class="disconnect-banner-icon">🎮</div>
+            <div class="disconnect-banner-text">
+              <h4>No Controller Connected</h4>
+              <p>Connect your PowerA OPS v1 to customize buttons, sticks, triggers, RGB lighting, and dual-motor vibration.</p>
+            </div>
+          </div>
+          <div class="disconnect-banner-steps">
+            <div class="step-chip"><span>⚡</span> <strong>Wired:</strong> Plug USB-C</div>
+            <div class="step-chip"><span>📶</span> <strong>2.4GHz:</strong> Plug Dongle</div>
+            <div class="step-chip"><span>ᛒ</span> <strong>BT:</strong> Hold Sync 3s</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Connection Mode Cards -->
+          <div class="card connection-card">
+            <div class="card-header">
+              <h3>Connection Mode</h3>
+              <span class="badge" id="dash-active-mode-badge">Disconnected</span>
+            </div>
+            <div class="mode-toggles">
+              <div class="mode-box" id="mode-box-wired">
+                <div class="mode-icon">⚡</div>
+                <h4>Wired USB-C</h4>
+                <p>1000Hz Ultra-low latency</p>
+                <span class="mode-status ready" id="status-text-wired">Standby (USB-C)</span>
+              </div>
+              <div class="mode-box" id="mode-box-dongle">
+                <div class="mode-icon">📶</div>
+                <h4>2.4GHz Dongle</h4>
+                <p>Lag-free proprietary wireless</p>
+                <span class="mode-status paired" id="status-text-dongle">Standby (2.4GHz)</span>
+              </div>
+              <div class="mode-box" id="mode-box-bt">
+                <div class="mode-icon">ᛒ</div>
+                <h4>Bluetooth</h4>
+                <p>Direct macOS GameController</p>
+                <span class="mode-status standby" id="status-text-bt">Standby (BT)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Input Monitor Preview -->
+          <div class="card live-preview-card">
+            <div class="card-header">
+              <h3>Interactive Controller Preview</h3>
+              <div class="view-toggle-btns">
+                <button class="view-btn active" id="btn-view-front">Front</button>
+                <button class="view-btn" id="btn-view-back">Back & Paddles</button>
+              </div>
+            </div>
+
+            <div class="controller-visualizer-container">
+              <div class="controller-image-wrapper">
+                <img src="../assets/controller_front.png" alt="Controller Front" class="controller-base-img" id="controller-render-img">
+                <!-- Live Interactive Overlays for buttons -->
+                <div class="live-highlight-layer" id="live-highlight-layer"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Telemetry & Stats -->
+          <div class="card stats-card">
+            <div class="card-header">
+              <h3>Hardware Diagnostics</h3>
+            </div>
+            <div class="stat-items">
+              <div class="stat-item">
+                <span class="stat-label">Report Rate</span>
+                <span class="stat-val" id="stat-poll-rate">500 Hz (2.0 ms)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Battery Level</span>
+                <span class="stat-val" id="stat-battery">92% (Normal)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Driver Status</span>
+                <span class="stat-val text-success">Virtual HID Active</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Steam / Game Support</span>
+                <span class="stat-val text-success">SDL DB Installed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. INPUT TESTER TAB -->
+      <section class="tab-pane" id="tab-tester">
+        <div class="pane-header">
+          <div>
+            <h1>Active Hardware Input Tester</h1>
+            <p>Real-time low-latency telemetry from PowerA Interface 0 Interrupt Stream.</p>
+          </div>
+          <div class="tester-metrics-header">
+            <div class="tester-metric-chip">
+              <span class="metric-label">Rate</span>
+              <span class="metric-val text-accent" id="tester-hz">-- Hz</span>
+            </div>
+            <div class="tester-metric-chip">
+              <span class="metric-label">Packets</span>
+              <span class="metric-val" id="tester-reports">0</span>
+            </div>
+            <div class="tester-metric-chip">
+              <span class="metric-label">Link</span>
+              <span class="metric-val" id="tester-transport">Scanning...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tester-grid">
+          <!-- Button Matrix -->
+          <div class="card tester-buttons-card">
+            <h3>Digital Buttons & Paddles</h3>
+            
+            <div class="tester-btn-group">
+              <label>Face Buttons</label>
+              <div class="tester-btn-row">
+                <div class="test-btn btn-a" id="btn-test-a" data-btn-key="A">A</div>
+                <div class="test-btn btn-b" id="btn-test-b" data-btn-key="B">B</div>
+                <div class="test-btn btn-x" id="btn-test-x" data-btn-key="X">X</div>
+                <div class="test-btn btn-y" id="btn-test-y" data-btn-key="Y">Y</div>
+              </div>
+            </div>
+
+            <div class="tester-btn-group">
+              <label>Directional Pad</label>
+              <div class="tester-dpad-grid">
+                <div></div>
+                <div class="test-btn" id="btn-test-dup" data-btn-key="DPAD_UP">▲</div>
+                <div></div>
+                <div class="test-btn" id="btn-test-dleft" data-btn-key="DPAD_LEFT">◄</div>
+                <div class="test-dpad-center">●</div>
+                <div class="test-btn" id="btn-test-dright" data-btn-key="DPAD_RIGHT">►</div>
+                <div></div>
+                <div class="test-btn" id="btn-test-ddown" data-btn-key="DPAD_DOWN">▼</div>
+                <div></div>
+              </div>
+            </div>
+
+            <div class="tester-btn-group">
+              <label>Bumpers & System</label>
+              <div class="tester-btn-row">
+                <div class="test-btn" id="btn-test-lb" data-btn-key="LB">LB</div>
+                <div class="test-btn" id="btn-test-rb" data-btn-key="RB">RB</div>
+                <div class="test-btn" id="btn-test-view" data-btn-key="VIEW">View</div>
+                <div class="test-btn" id="btn-test-menu" data-btn-key="MENU">Menu</div>
+                <div class="test-btn" id="btn-test-guide" data-btn-key="GUIDE">Guide</div>
+              </div>
+            </div>
+
+            <div class="tester-btn-group">
+              <label>Stick Clicks (L3 / R3)</label>
+              <div class="tester-btn-row">
+                <div class="test-btn" id="btn-test-lsb" data-btn-key="LSB">LSB (L3)</div>
+                <div class="test-btn" id="btn-test-rsb" data-btn-key="RSB">RSB (R3)</div>
+              </div>
+            </div>
+
+            <div class="tester-btn-group">
+              <label>Advanced Gaming Buttons (Back Paddles)</label>
+              <div class="tester-btn-row">
+                <div class="test-btn paddle" id="btn-test-agl1" data-btn-key="AGL1">AGL1</div>
+                <div class="test-btn paddle" id="btn-test-agl2" data-btn-key="AGL2">AGL2</div>
+                <div class="test-btn paddle" id="btn-test-agr1" data-btn-key="AGR1">AGR1</div>
+                <div class="test-btn paddle" id="btn-test-agr2" data-btn-key="AGR2">AGR2</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Stick Radars -->
+          <div class="card tester-sticks-card">
+            <h3>Precision Analog Sticks</h3>
+            <div class="tester-sticks-flex">
+              <div class="tester-stick-box">
+                <h4>Left Analog Stick</h4>
+                <div class="stick-radar-container">
+                  <canvas id="tester-canvas-stick-l" width="220" height="220"></canvas>
+                </div>
+                <div class="tester-readout" id="tester-coords-l">X: 0.000 | Y: 0.000</div>
+                <div class="tester-subreadout" id="tester-radial-l">Mag: 0.00 | Angle: 0°</div>
+              </div>
+              <div class="tester-stick-box">
+                <h4>Right Analog Stick</h4>
+                <div class="stick-radar-container">
+                  <canvas id="tester-canvas-stick-r" width="220" height="220"></canvas>
+                </div>
+                <div class="tester-readout" id="tester-coords-r">X: 0.000 | Y: 0.000</div>
+                <div class="tester-subreadout" id="tester-radial-r">Mag: 0.00 | Angle: 0°</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Triggers & Telemetry -->
+          <div class="card tester-triggers-card">
+            <h3>Analog Triggers & Stream</h3>
+            <div class="tester-triggers-flex">
+              <div class="tester-trigger-unit">
+                <div class="meter-track">
+                  <div class="meter-fill" id="tester-fill-lt" style="height:0%;"></div>
+                </div>
+                <div class="trigger-meta">
+                  <div class="trigger-name">Left Trigger</div>
+                  <div class="trigger-pct" id="tester-val-lt">0%</div>
+                  <div class="test-btn click-badge" id="btn-test-lt-click">Digital Click</div>
+                </div>
+              </div>
+              <div class="tester-trigger-unit">
+                <div class="meter-track">
+                  <div class="meter-fill" id="tester-fill-rt" style="height:0%;"></div>
+                </div>
+                <div class="trigger-meta">
+                  <div class="trigger-name">Right Trigger</div>
+                  <div class="trigger-pct" id="tester-val-rt">0%</div>
+                  <div class="test-btn click-badge" id="btn-test-rt-click">Digital Click</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="raw-packet-box">
+              <label>Live 15-Byte Packet Telemetry</label>
+              <div class="hex-stream" id="tester-hex-stream">00 14 00 00 00 00 00 00 00 00 00 00 00 00 00</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. BUTTON MAPPING TAB -->
+      <section class="tab-pane" id="tab-mapping">
+        <div class="pane-header">
+          <div>
+            <h1>Button Mapping & Advanced Paddles</h1>
+            <p>Configure face buttons, shoulder bumpers, and the 4 Advanced Gaming Buttons (AGL1, AGL2, AGR1, AGR2).</p>
+          </div>
+          <button class="btn btn-primary" id="btn-save-mapping">Save to Controller</button>
+        </div>
+
+        <div class="mapping-split-container">
+          <div class="card mapping-visual-card">
+            <div class="controller-paddles-wrap">
+              <div class="paddles-img-box">
+                <img src="../assets/controller_back.png" alt="PowerA OPS v1 Back View" class="paddles-render-img">
+                <!-- Interactive hotspot badges for back paddles -->
+                <div class="paddle-badge pos-agl1" data-btn="AGL1">AGL1</div>
+                <div class="paddle-badge pos-agl2" data-btn="AGL2">AGL2</div>
+                <div class="paddle-badge pos-agr1" data-btn="AGR1">AGR1</div>
+                <div class="paddle-badge pos-agr2" data-btn="AGR2">AGR2</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mapping-controls-card">
+            <h3>Advanced Gaming Buttons (Back Grip)</h3>
+            <div class="remap-row">
+              <span class="remap-source">AGL1 (Upper Left Paddle)</span>
+              <select class="remap-select" id="map-agl1">
+                <option value="A">Button A (Cross)</option>
+                <option value="B">Button B (Circle)</option>
+                <option value="X" selected>Button X (Square)</option>
+                <option value="Y">Button Y (Triangle)</option>
+                <option value="LB">Left Bumper (LB)</option>
+                <option value="LSB">Left Thumb Click (L3)</option>
+              </select>
+            </div>
+            <div class="remap-row">
+              <span class="remap-source">AGL2 (Lower Left Paddle)</span>
+              <select class="remap-select" id="map-agl2">
+                <option value="A">Button A</option>
+                <option value="LB" selected>Left Bumper (LB)</option>
+                <option value="LT">Left Trigger (LT)</option>
+                <option value="VIEW">View / Back</option>
+              </select>
+            </div>
+            <div class="remap-row">
+              <span class="remap-source">AGR1 (Upper Right Paddle)</span>
+              <select class="remap-select" id="map-agr1">
+                <option value="A" selected>Button A (Cross)</option>
+                <option value="B">Button B (Circle)</option>
+                <option value="RB">Right Bumper (RB)</option>
+                <option value="RSB">Right Thumb Click (R3)</option>
+              </select>
+            </div>
+            <div class="remap-row">
+              <span class="remap-source">AGR2 (Lower Right Paddle)</span>
+              <select class="remap-select" id="map-agr2">
+                <option value="B" selected>Button B (Circle)</option>
+                <option value="RB">Right Bumper (RB)</option>
+                <option value="RT">Right Trigger (RT)</option>
+                <option value="MENU">Menu / Start</option>
+              </select>
+            </div>
+
+            <h3 style="margin-top:24px;">Standard Face Buttons</h3>
+            <div class="remap-row">
+              <span class="remap-source">Button A</span>
+              <select class="remap-select" id="map-btn-a"><option value="A">A (Default)</option></select>
+            </div>
+            <div class="remap-row">
+              <span class="remap-source">Button B</span>
+              <select class="remap-select" id="map-btn-b"><option value="B">B (Default)</option></select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. STICKS & CURVES TAB -->
+      <section class="tab-pane" id="tab-sticks">
+        <div class="pane-header">
+          <div>
+            <h1>Sticks Calibration & Response Curves</h1>
+            <p>Fine-tune inner/outer deadzones and dynamic stick response curves with live 60fps telemetry.</p>
+          </div>
+          <button class="btn btn-secondary" id="btn-recalib-sticks">Calibrate Center</button>
+        </div>
+
+        <div class="sticks-grid">
+          <!-- Left Stick -->
+          <div class="card stick-card">
+            <h3>Left Analog Stick</h3>
+            <div class="stick-radar-container">
+              <canvas id="canvas-stick-l" width="260" height="260"></canvas>
+              <div class="stick-coords" id="coords-stick-l">X: 0.000 | Y: 0.000</div>
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Inner Deadzone</span>
+                <span class="slider-val" id="val-stick-l-inner">5%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-stick-l-inner" min="0" max="30" value="5">
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Outer Deadzone</span>
+                <span class="slider-val" id="val-stick-l-outer">98%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-stick-l-outer" min="70" max="100" value="98">
+            </div>
+            <div class="curve-selector">
+              <label>Response Curve</label>
+              <div class="curve-btns">
+                <button class="curve-btn active" data-stick="l" data-curve="0">Linear</button>
+                <button class="curve-btn" data-stick="l" data-curve="1">Smooth</button>
+                <button class="curve-btn" data-stick="l" data-curve="2">Aggressive</button>
+                <button class="curve-btn" data-stick="l" data-curve="3">Instant</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Stick -->
+          <div class="card stick-card">
+            <h3>Right Analog Stick</h3>
+            <div class="stick-radar-container">
+              <canvas id="canvas-stick-r" width="260" height="260"></canvas>
+              <div class="stick-coords" id="coords-stick-r">X: 0.000 | Y: 0.000</div>
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Inner Deadzone</span>
+                <span class="slider-val" id="val-stick-r-inner">5%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-stick-r-inner" min="0" max="30" value="5">
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Outer Deadzone</span>
+                <span class="slider-val" id="val-stick-r-outer">98%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-stick-r-outer" min="70" max="100" value="98">
+            </div>
+            <div class="curve-selector">
+              <label>Response Curve</label>
+              <div class="curve-btns">
+                <button class="curve-btn active" data-stick="r" data-curve="0">Linear</button>
+                <button class="curve-btn" data-stick="r" data-curve="1">Smooth</button>
+                <button class="curve-btn" data-stick="r" data-curve="2">Aggressive</button>
+                <button class="curve-btn" data-stick="r" data-curve="3">Instant</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. TRIGGERS & LOCKS TAB -->
+      <section class="tab-pane" id="tab-triggers">
+        <div class="pane-header">
+          <div>
+            <h1>Triggers & 3-Way Trigger Locks</h1>
+            <p>Calibrate trigger stop presets (T1: Full, T2: Medium, T3: Instant) and custom analog ranges.</p>
+          </div>
+          <div class="toggle-group">
+            <input type="checkbox" id="sync-triggers-chk" checked>
+            <label for="sync-triggers-chk">Sync Left & Right Triggers</label>
+          </div>
+        </div>
+
+        <div class="triggers-grid">
+          <!-- Left Trigger -->
+          <div class="card trigger-card">
+            <h3>Left Trigger (LT)</h3>
+            <div class="trigger-meter-container">
+              <div class="meter-track">
+                <div class="meter-fill" id="meter-fill-lt" style="height: 0%;"></div>
+              </div>
+              <div class="meter-readout" id="meter-val-lt">0%</div>
+            </div>
+            <div class="stop-presets">
+              <button class="stop-btn active" data-trig="l" data-stop="T1">T1 (100%)</button>
+              <button class="stop-btn" data-trig="l" data-stop="T2">T2 (50%)</button>
+              <button class="stop-btn" data-trig="l" data-stop="T3">T3 (Hair)</button>
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Start Deadzone</span>
+                <span class="slider-val" id="val-lt-start">0%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-lt-start" min="0" max="30" value="0">
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>End Stop Point</span>
+                <span class="slider-val" id="val-lt-end">100%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-lt-end" min="10" max="100" value="100">
+            </div>
+          </div>
+
+          <!-- Right Trigger -->
+          <div class="card trigger-card">
+            <h3>Right Trigger (RT)</h3>
+            <div class="trigger-meter-container">
+              <div class="meter-track">
+                <div class="meter-fill" id="meter-fill-rt" style="height: 0%;"></div>
+              </div>
+              <div class="meter-readout" id="meter-val-rt">0%</div>
+            </div>
+            <div class="stop-presets">
+              <button class="stop-btn active" data-trig="r" data-stop="T1">T1 (100%)</button>
+              <button class="stop-btn" data-trig="r" data-stop="T2">T2 (50%)</button>
+              <button class="stop-btn" data-trig="r" data-stop="T3">T3 (Hair)</button>
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Start Deadzone</span>
+                <span class="slider-val" id="val-rt-start">0%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-rt-start" min="0" max="30" value="0">
+            </div>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>End Stop Point</span>
+                <span class="slider-val" id="val-rt-end">100%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-rt-end" min="10" max="100" value="100">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. DUAL-RUMBLE VIBRATION TAB -->
+      <section class="tab-pane" id="tab-vibration">
+        <div class="pane-header">
+          <div>
+            <h1>Dual-Rumble Haptic Vibration</h1>
+            <p>Standard gamepad rumble works like an audio system: the <strong>Heavy Motor</strong> acts as the subwoofer (intense & deep), while the <strong>Light Motor</strong> acts as the tweeter (soft & fast buzz).</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" id="btn-test-all-motors">Test Both Motors</button>
+            <button class="btn btn-secondary" id="btn-stop-all-motors">Stop Motors</button>
+          </div>
+        </div>
+
+        <div class="vibration-grid">
+          <!-- Left Grip Motor -->
+          <div class="card motor-card">
+            <div class="motor-badge">Left Grip · Heavy</div>
+            <h3>Heavy Motor (Intense & Slow)</h3>
+            <p>Low-frequency rotor with large brass weight. Slower RPM creating deep, heavy physical shaking (explosions, crashes, recoil).</p>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Strength</span>
+                <span class="slider-val" id="val-motor-lg">80%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-motor-lg" min="0" max="100" value="80">
+            </div>
+            <button class="btn btn-secondary motor-test-btn" data-motor="lg">Test Heavy Motor</button>
+          </div>
+
+          <!-- Right Grip Motor -->
+          <div class="card motor-card">
+            <div class="motor-badge">Right Grip · Light</div>
+            <h3>Light Motor (Soft & Fast)</h3>
+            <p>High-frequency rotor with tiny counterweight. High RPM creating crisp, soft, rapid buzzing (subtle textures, UI clicks, road grit).</p>
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Strength</span>
+                <span class="slider-val" id="val-motor-rg">80%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-motor-rg" min="0" max="100" value="80">
+            </div>
+            <button class="btn btn-secondary motor-test-btn" data-motor="rg">Test Light Motor</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. RGB LIGHTING STUDIO TAB -->
+      <section class="tab-pane" id="tab-rgb">
+        <div class="pane-header">
+          <div>
+            <h1>RGB Lighting Studio</h1>
+            <p>Custom lighting profiles, animated wave modes, speed, and zone assignments.</p>
+          </div>
+          <button class="btn btn-primary" id="btn-apply-rgb">Apply RGB</button>
+        </div>
+
+        <div class="rgb-studio-grid">
+          <div class="card rgb-preview-card">
+            <h3>Lighting Zones Preview</h3>
+            <div class="rgb-render-frame">
+              <img src="../assets/controller_front.png" alt="RGB Preview" class="rgb-base-img">
+              <div class="rgb-glow-ring" id="rgb-glow-ring"></div>
+            </div>
+          </div>
+
+          <div class="card rgb-controls-card">
+            <h3>Lighting Effects</h3>
+            <div class="rgb-mode-pills">
+              <button class="rgb-mode-pill active" data-mode="0">Solid Color</button>
+              <button class="rgb-mode-pill" data-mode="1">Breathing</button>
+              <button class="rgb-mode-pill" data-mode="2">Color Cycle</button>
+              <button class="rgb-mode-pill" data-mode="3">Rainbow Wave</button>
+              <button class="rgb-mode-pill" data-mode="4">Flame Ripple</button>
+            </div>
+
+            <h4 style="margin-top:20px;">Zones</h4>
+            <div class="zone-btns">
+              <button class="zone-btn active" data-zone="0">All Zones</button>
+              <button class="zone-btn" data-zone="1">PowerA Logo & LED</button>
+              <button class="zone-btn" data-zone="2">Thumbstick Halo</button>
+              <button class="zone-btn" data-zone="3">Grip Accents</button>
+            </div>
+
+            <div class="control-slider-group" style="margin-top:20px;">
+              <div class="slider-header">
+                <span>Brightness</span>
+                <span class="slider-val" id="val-rgb-bright">100%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-rgb-bright" min="0" max="100" value="100">
+            </div>
+
+            <div class="control-slider-group">
+              <div class="slider-header">
+                <span>Animation Speed</span>
+                <span class="slider-val" id="val-rgb-speed">50%</span>
+              </div>
+              <input type="range" class="styled-slider" id="slider-rgb-speed" min="10" max="100" value="50">
+            </div>
+
+            <h4 style="margin-top:20px;">Custom Color Palette</h4>
+            <div class="color-swatches">
+              <button class="swatch-btn" style="background:#FF5001;" data-color="#FF5001"></button>
+              <button class="swatch-btn" style="background:#0195FF;" data-color="#0195FF"></button>
+              <button class="swatch-btn" style="background:#98C019;" data-color="#98C019"></button>
+              <button class="swatch-btn" style="background:#FF0055;" data-color="#FF0055"></button>
+              <button class="swatch-btn" style="background:#9D00FF;" data-color="#9D00FF"></button>
+              <button class="swatch-btn" style="background:#FFFFFF;" data-color="#FFFFFF"></button>
+              <input type="color" id="rgb-custom-picker" value="#FF5001">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. PROFILES TAB (.pwa) -->
+      <section class="tab-pane" id="tab-profiles">
+        <div class="pane-header">
+          <div>
+            <h1>Profile Management</h1>
+            <p>Authentic 173-byte .pwa profiles. Import, export, or store up to 3 on-device profiles.</p>
+          </div>
+          <div class="quick-actions">
+            <button class="btn btn-secondary" id="btn-import-pwa">Import .pwa</button>
+            <button class="btn btn-primary" id="btn-export-pwa">Export .pwa</button>
+          </div>
+        </div>
+
+        <div class="profiles-list-grid">
+          <div class="card profile-item-card active" data-pid="1">
+            <div class="profile-card-header">
+              <h3>T1 Profile</h3>
+              <span class="badge">Default</span>
+            </div>
+            <p>Full trigger travel (100%), linear response curve, standard button mappings.</p>
+            <div class="profile-card-actions">
+              <button class="btn btn-sm btn-primary">Active</button>
+            </div>
+          </div>
+
+          <div class="card profile-item-card" data-pid="2">
+            <div class="profile-card-header">
+              <h3>T2 Profile</h3>
+              <span class="badge">Speed</span>
+            </div>
+            <p>50% trigger lock, smooth sensitivity curve, rapid response for competitive gaming.</p>
+            <div class="profile-card-actions">
+              <button class="btn btn-sm btn-secondary">Select</button>
+            </div>
+          </div>
+
+          <div class="card profile-item-card" data-pid="3">
+            <div class="profile-card-header">
+              <h3>T3 Profile</h3>
+              <span class="badge">Hair Trigger</span>
+            </div>
+            <p>Hair trigger (instant digital click), aggressive stick curves, mapped back paddles.</p>
+            <div class="profile-card-actions">
+              <button class="btn btn-sm btn-secondary">Select</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. MACOS DRIVER SETTINGS TAB -->
+      <section class="tab-pane" id="tab-driver">
+        <div class="pane-header">
+          <div>
+            <h1>macOS Game Driver & Input Subsystem</h1>
+            <p>Driver daemon status, Steam / SDL integration, and macOS input calibration.</p>
+          </div>
+          <button class="btn btn-primary" id="btn-reinstall-driver">Install Game Mapping</button>
+        </div>
+
+        <div class="driver-settings-grid">
+          <div class="card">
+            <h3>Driver Daemon Service</h3>
+            <p>Runs transparently in the background via launchd to map PowerA OPS v1 in Wired, 2.4G Dongle, and Bluetooth modes.</p>
+            <div class="driver-toggle-row">
+              <div class="driver-status-indicator">
+                <span class="status-dot connected"></span>
+                <span id="daemon-status-text">Daemon Running (PID active)</span>
+              </div>
+              <button class="btn btn-secondary" id="btn-toggle-daemon">Restart Daemon</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Polling Rate Selection</h3>
+            <p>Select controller update frequency over USB / 2.4GHz Dongle.</p>
+            <div class="poll-rate-btns">
+              <button class="poll-btn" data-rate="125">125 Hz (8ms)</button>
+              <button class="poll-btn" data-rate="250">250 Hz (4ms)</button>
+              <button class="poll-btn active" data-rate="500">500 Hz (2ms)</button>
+              <button class="poll-btn" data-rate="1000">1000 Hz (1ms)</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Universal Game Compatibility (SDL DB)</h3>
+            <p>Automatically configures Steam, Apple Arcade, RetroArch, OpenEmu, Ryujinx, and native macOS games.</p>
+            <div class="code-preview-block">
+              <code>03000000d62000002540000000010000,PowerA OPS v1 Wired,platform:Mac OS X...</code>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:12px;" id="btn-install-sdl-db">Sync with Steam & System</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

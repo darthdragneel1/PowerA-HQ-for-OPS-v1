@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/driver",
+        "${workspaceFolder}/PowerA-PC-HQ-macOS/**",
+        "${workspaceFolder}/PowerA-PC-HQ-macOS/driver",
+        "/opt/homebrew/include/**",
+        "/opt/homebrew/include",
+        "/opt/homebrew/include/hidapi",
+        "/usr/local/include/**"
+      ],
+      "defines": [],
+      "macFrameworkPath": [
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks",
+        "/System/Library/Frameworks"
+      ],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-arm64",
+      "compileCommands": "${workspaceFolder}/compile_commands.json"
+    }
+  ],
+  "version": 4
+}

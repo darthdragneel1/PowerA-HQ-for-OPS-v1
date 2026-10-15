@@ -172,6 +172,15 @@ Detailed deep-dive guides are available in the [`docs/`](docs/) directory:
 
 ---
 
+## Related Projects & Ecosystem
+
+If you are looking for support for different PowerA controller models on macOS:
+
+- [**jki127/powera-xbox-mac**](https://github.com/jki127/powera-xbox-mac): A firmware flashing utility (`powera-flash`) designed for the **PowerA Enhanced Wired Controller for Xbox One** (Model `1505660-03`, USB ID `24C6:581A`) that modifies the controller's USB device descriptor so macOS 15+ loads Apple's native wired Xbox driver.
+- **This Project ([PowerA-HQ-for-OPS-v1](https://github.com/darthdragneel1/PowerA-HQ-for-OPS-v1))**: A full native macOS companion application, low-latency user-space driver, RGB/rumble studio, and profile manager for the **PowerA OPS v1 & OPS v3 Pro Wireless/Wired Family** (`VID: 0x20D6`, `PID: 0x4025 / 0x4027 / 0x400C / 0x4013`) via direct user-space Apple IOKit and hidapi, requiring zero firmware flashing.
+
+---
+
 ## Contributing
 
 We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting pull requests.
